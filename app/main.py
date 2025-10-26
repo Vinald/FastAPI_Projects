@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-from app.routers import posts
+from app.posts import posts
 
 app = FastAPI()
-
 
 # routes to pages
 app.include_router(posts.post_router)

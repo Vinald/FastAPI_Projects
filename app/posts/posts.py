@@ -1,51 +1,33 @@
 from fastapi import APIRouter, HTTPException, status, Response
-from pydantic import BaseModel
 from typing import List, Optional
+from .model import Post, PostOut
+from .data import  POSTS
 
 post_router = APIRouter(
     prefix="/posts",
     tags=["posts"]
 )
 
-my_posts = [
-    {"id": 1, "title": "Post 1", "content": "Content of post 1",
-        "published": True, "rating": 5},
-    {"id": 2, "title": "Post 2", "content": "Content of post 2",
-        "published": False, "rating": None}
-]
-
-
-class Post(BaseModel):
-    title: str
-    content: str
-    published: bool = True
-    rating: Optional[int] = None
-
-
-class PostOut(Post):
-    id: int
-
-
 def find_post(post_id: int) -> Optional[dict]:
-    return next((post for post in my_posts if post["id"] == post_id), None)
+    return next((post for post in POSTS if post["id"] == post_id), None)
 
 
 def get_next_id() -> int:
-    if my_posts:
-        return max(post["id"] for post in my_posts) + 1
+    if POSTS:
+        return max(post["id"] for post in POSTS) + 1
     return 1
 
 
 @post_router.get("/", response_model=List[PostOut])
 async def get_posts():
-    return my_posts
+    return POSTS
 
 
 @post_router.post("/", status_code=status.HTTP_201_CREATED, response_model=PostOut)
 async def create_post(post: Post):
     new_post = post.model_dump()
     new_post["id"] = get_next_id()
-    my_posts.append(new_post)
+    POSTS.append(new_post)
     return new_post
 
 
@@ -74,5 +56,5 @@ async def delete_post(post_id: int):
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Post {post_id} not found")
-    my_posts.remove(post)
+    POSTS.remove(post)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
