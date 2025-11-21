@@ -1,2 +1,3 @@
-# FastAPI_Blogs
+# FastAPI_Projects
+
 Blog Project
