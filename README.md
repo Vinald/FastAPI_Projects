@@ -1,3 +1,3 @@
-# FastAPI_Projects
+# Blog
 
 Blog Project
