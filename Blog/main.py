@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from blog.routes import blog_route
-from users.routes import user_route
-from blog import models
-from database import engine
+from .blog.routes import blog_route
+from .users.routes import user_route
+from .blog import models
+from .database import engine
 
 models.Base.metadata.create_all(bind=engine)
 

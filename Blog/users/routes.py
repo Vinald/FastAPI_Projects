@@ -1,12 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from .schemas import ShowUser, UserCreate
-from database import get_db
+from ..database import get_db
 from sqlalchemy.orm import Session
 from .models import User
-from passlib.context import CryptContext
+from .hashing import Hash
 
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 user_route = APIRouter(prefix="/users", tags=["Users"])
 
@@ -20,7 +18,7 @@ async def read_users(db: Session = Depends(get_db)):
 async def read_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {user_id} not found")
     return user
 
 
@@ -49,9 +47,8 @@ Depends(get_db)):
 
 @user_route.post("/", response_model=ShowUser, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    hashed_password = pwd_context.hash(user.password)
-    user.password = hashed_password
-    new_user = User(**user.model_dump())
+    hashed_password = Hash.bcrypt(user.password)
+    new_user = User(name=user.name, email=user.email, password=hashed_password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
