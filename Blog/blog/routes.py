@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status, Response, HTTPException
-from . import models, schemas
-from .database import get_db
+from . import models
+from database import get_db
 from .schemas import BlogCreate, BlogUpdate, ShowBlog
 from sqlalchemy.orm import Session
 
@@ -14,7 +14,7 @@ async def read_blogs(db: Session = Depends(get_db)):
     return blogs
 
 
-@blog_route.get("/{blog_id}", status_code=status.HTTP_200_OK)
+@blog_route.get("/{blog_id}", response_model=ShowBlog, status_code=status.HTTP_200_OK)
 async def read_blog(blog_id: int, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == blog_id).first()
     if blog is None:

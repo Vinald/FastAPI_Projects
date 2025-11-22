@@ -1,0 +1,58 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from .schemas import ShowUser, UserCreate
+from database import get_db
+from sqlalchemy.orm import Session
+from .models import User
+from passlib.context import CryptContext
+
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+user_route = APIRouter(prefix="/users", tags=["Users"])
+
+@user_route.get("/", response_model=list[ShowUser])
+async def read_users(db: Session = Depends(get_db)):
+    users = db.query(User).all()
+    return users
+
+
+@user_route.get("/{user_id}", response_model=ShowUser)
+async def read_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return user
+
+
+@user_route.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return
+
+
+@user_route.put("/{user_id}", response_model=ShowUser, status_code=status.HTTP_200_OK)
+async def update_user(user_id: int, updated_user: ShowUser, db: Session =
+Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    for key, value in updated_user.model_dump().items():
+        setattr(user, key, value)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@user_route.post("/", response_model=ShowUser, status_code=status.HTTP_201_CREATED)
+async def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    hashed_password = pwd_context.hash(user.password)
+    user.password = hashed_password
+    new_user = User(**user.model_dump())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
