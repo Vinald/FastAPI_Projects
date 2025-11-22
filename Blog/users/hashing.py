@@ -5,7 +5,7 @@ pwd_context = CryptContext(
     deprecated="auto"
 )
 
-class Hash():
+class Hash:
     @staticmethod
     def bcrypt(password: str) -> str:
         return pwd_context.hash(password)

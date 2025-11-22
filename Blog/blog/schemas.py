@@ -1,26 +1,33 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-class Blog(BaseModel):
+class BlogBase(BaseModel):
     title: str
     content: str
 
 
-class ShowBlog(Blog):
-    class Config:
-        orm_mode = True
+class Blog(BlogBase):
+    # allow creation from SQLAlchemy objects
+    model_config = ConfigDict(from_attributes=True)
 
 
-class BlogCreate(Blog):
+class ShowBlog(BlogBase):
+    # use a fully-qualified forward reference to avoid a runtime import and circular import
+    creator: "users.schemas.ShowUser"
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class BlogCreate(BlogBase):
     pass
 
 
-class BlogUpdate(Blog):
+class BlogUpdate(BlogBase):
     pass
 
 
-class BlogInDB(Blog):
+class BlogInDB(BlogBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+
