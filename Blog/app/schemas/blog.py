@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from ..users.schemas import ShowUser
+from user import ShowUser
 
 
 class BlogBase(BaseModel):

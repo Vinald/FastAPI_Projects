@@ -1,14 +1,16 @@
 
 from pydantic import BaseModel
 from typing import List
-from ..blog.schemas import Blog
+from blog import Blog
 
 
-class User(BaseModel):
+class UserBase(BaseModel):
     name: str
     email: str
     password: str | None = None
 
+
+class User(UserBase):
     class Config:
         orm_mode = True
 
@@ -22,5 +24,9 @@ class ShowUser(BaseModel):
         orm_mode = True
 
 
-class UserCreate(User):
+class UserCreate(UserBase):
+    pass
+
+
+class UserUpdate(UserBase):
     pass

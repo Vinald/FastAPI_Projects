@@ -1,8 +1,8 @@
-from ..users.models import User as UserModel
+from ..models.user import User as UserModel
 from sqlalchemy.orm import Session
-from ..users.schemas import UserCreate, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate
 from fastapi import HTTPException, status
-from ..users.hashing import Hash
+from app.utils.hashing import Hash
 
 
 def get_all(db: Session):

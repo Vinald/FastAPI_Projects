@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
-from ..database import Base
+from app.cpre.database import Base
 from sqlalchemy.orm import relationship
+
 
 class Blog(Base):
     __tablename__ = "blogs"
