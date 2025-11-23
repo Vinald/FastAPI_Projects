@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
-from app.cpre.database import Base
+from app.core.database import Base
 from sqlalchemy.orm import relationship
 
 
@@ -11,4 +11,4 @@ class Blog(Base):
     content = Column(Text)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    creator  = relationship("User", back_populates="blogs")
+    creator = relationship("User", back_populates="blogs")
