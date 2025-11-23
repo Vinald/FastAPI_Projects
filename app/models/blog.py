@@ -10,5 +10,3 @@ class Blog(Base):
     title = Column(String, index=True)
     content = Column(Text)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-
-    creator = relationship("User", back_populates="blogs")

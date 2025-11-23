@@ -1,4 +1,3 @@
-from __future__ import annotations
 from pydantic import BaseModel, ConfigDict
 
 
@@ -9,15 +8,11 @@ class BlogBase(BaseModel):
 
 class Blog(BlogBase):
     id: int
-    creator: "app.schemas.user.ShowUser" | None = None
-
     model_config = ConfigDict(from_attributes=True)
 
 
 class ShowBlog(BlogBase):
     id: int
-    creator: "app.schemas.user.ShowUser"
-
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -31,7 +26,6 @@ class BlogUpdate(BlogBase):
 
 class BlogInDB(BlogBase):
     id: int
-
     model_config = ConfigDict(from_attributes=True)
 
 
