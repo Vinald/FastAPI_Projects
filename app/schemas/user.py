@@ -16,7 +16,7 @@ class User(UserBase):
 class ShowUser(BaseModel):
     name: str
     email: str
-    blogs: List["Blog"] = []
+    blogs: List["app.schemas.blog.Blog"] = []
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -29,5 +29,5 @@ class UserUpdate(UserBase):
     pass
 
 
-# ⭐ REQUIRED FOR Pydantic v2
-ShowUser.model_rebuild()
+# Note: model_rebuild will be triggered from the application entrypoint after all
+# schema modules are imported to avoid circular evaluation issues at import time.

@@ -9,14 +9,14 @@ class BlogBase(BaseModel):
 
 class Blog(BlogBase):
     id: int
-    creator: "ShowUser" | None = None
+    creator: "app.schemas.user.ShowUser" | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class ShowBlog(BlogBase):
     id: int
-    creator: "ShowUser"
+    creator: "app.schemas.user.ShowUser"
 
     model_config = ConfigDict(from_attributes=True)
 
