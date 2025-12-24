@@ -35,4 +35,4 @@ async def update_blog(blog_id: int, updated_blog: BlogUpdate, db: Session = Depe
 # delete a blog
 @blog_route.delete("/{blog_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_blog(blog_id: int, db: Session = Depends(get_db)):
-    return blog_repository.destroy(blog_id, db)
+    return blog_services.destroy(blog_id, db)
