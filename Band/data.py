@@ -4,7 +4,7 @@ BANDS = [
         {"title": "Led Zeppelin IV", "release_year": 1971},
         {"title": "Physical Graffiti", "release_year": 1975}
     ]},
-    {"id": 3, "name": "Pink Floyd", "genre": "Progressive Rock", "albums": [
+    {"id": 3, "name": "Pink Floyd", "genre": "Rock", "albums": [
         {"title": "The Dark Side of the Moon", "release_year": 1973},
         {"title": "Wish You Were Here", "release_year": 1975}
     ]},

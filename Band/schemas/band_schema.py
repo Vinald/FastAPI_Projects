@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from enum import Enum
 
 
@@ -14,6 +14,21 @@ class GenreURLChoice(Enum):
     REGGAE = "reggae"
     BLUES = "blues"
     METAL = "metal"
+    GRUNGE = "grunge"
+
+
+class GenreChoice(Enum):
+    ROCK = "Rock"
+    POP = "Pop"
+    JAZZ = "Jazz"
+    CLASSICAL = "Classical"
+    HIPHOP = "HipHop"
+    COUNTRY = "Country"
+    ELECTRONIC = "Electronic"
+    REGGAE = "Reggae"
+    BLUES = "Blues"
+    METAL = "Metal"
+    GRUNGE = "Grunge"
 
 
 class Album(BaseModel):
@@ -23,12 +38,15 @@ class Album(BaseModel):
 
 class BandBase(BaseModel):
     name: str
-    genre: str
+    genre: GenreChoice
     albums: list[Album] = []
 
 
 class BandCreate(BandBase):
-    pass
+    @field_validator('genre', mode='before')
+    @classmethod
+    def title_case_genre(cls, v):
+        return v.title()
 
 
 class BandWithID(BandBase):

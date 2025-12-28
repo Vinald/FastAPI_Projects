@@ -1,14 +1,22 @@
+# python
 from fastapi import APIRouter
-from data import BANDS
-from schemas import GenreURLChoice, BandBase, BandCreate, BandWithID
+from Band.data import BANDS
+from Band.schemas.band_schema import GenreURLChoice, BandCreate, BandWithID
 
 band_router = APIRouter()
+
+def _genre_value(obj) -> str:
+    """Return a lowercase genre string whether obj is an Enum or a str."""
+    if obj is None:
+        return ""
+    return obj.value.lower() if hasattr(obj, "value") else str(obj).lower()
 
 
 @band_router.get("/")
 async def get_bands(genre: GenreURLChoice | None = None) -> list[BandWithID]:
     if genre:
-        return [band for band in BANDS if band["genre"].lower() == genre.value.lower()]
+        target = _genre_value(genre)
+        return [band for band in BANDS if _genre_value(band.get("genre")) == target]
     return BANDS
 
 
@@ -22,12 +30,13 @@ async def get_band(band_id: int) -> BandWithID:
 
 @band_router.get("/genre/{genre}")
 async def get_bands_by_genre(genre: GenreURLChoice) -> list[dict]:
-    return [band for band in BANDS if band["genre"].lower() == genre.value.lower()]
+    target = _genre_value(genre)
+    return [band for band in BANDS if _genre_value(band.get("genre")) == target]
 
 
 @band_router.post("/")
 async def create_band(band: BandCreate) -> BandWithID:
-    new_id = max(band["id"] for band in BANDS) + 1 if BANDS else 1
+    new_id = max(item["id"] for item in BANDS) + 1 if BANDS else 1
     new_band = band.model_dump()
     new_band["id"] = new_id
     BANDS.append(new_band)
