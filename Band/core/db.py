@@ -1,11 +1,11 @@
 import os
 
+from dotenv import load_dotenv
 from sqlmodel import create_engine, SQLModel, Session
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+load_dotenv()
 
-if not DATABASE_URL:
-    DATABASE_URL = os.environ.get("DATABASE_URL") or "sqlite:///./band.sqlite3"
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL, echo=True)
 
