@@ -35,7 +35,12 @@ class GenreChoice(Enum):
 class AlbumBase(SQLModel):
     title: str
     release_year: int
-    band_id: int = Field(foreign_key="band.id")
+    band_id: int | None = Field(foreign_key="band.id")
+
+
+class BandBase(SQLModel):
+    name: str
+    genre: GenreChoice
 
 
 class Album(AlbumBase, table=True):
@@ -43,9 +48,9 @@ class Album(AlbumBase, table=True):
     band: Band = Relationship(back_populates="albums")
 
 
-class BandBase(SQLModel):
-    name: str
-    genre: GenreChoice
+class Band(BandBase, table=True):
+    id: int = Field(default=None, primary_key=True)
+    albums: list[Album] = Relationship(back_populates="band")
 
 
 class BandCreate(BandBase):
@@ -55,8 +60,3 @@ class BandCreate(BandBase):
     @classmethod
     def title_case_genre(cls, v):
         return v.title()
-
-
-class Band(BandBase, table=True):
-    id: int = Field(default=None, primary_key=True)
-    albums: list[Album] = Relationship(back_populates="band")

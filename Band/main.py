@@ -2,12 +2,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from Band.core.db import init_db
 from .api.v1.band import band_router
+from .core.db import init_db
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(apps: FastAPI):
     init_db()
     yield
     # Shutdown code here
